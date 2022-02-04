@@ -3,6 +3,7 @@
 #include <QObject>
 #include <daqhats.h>
 #include <QList>
+#include <QTime>
 
 
 
@@ -27,7 +28,14 @@ public:
 
     QList<double> voltArr;
 
+
+    int count = 0;
     QTimer* timer;
+
+    QTime startTime;
+    QTime currentTime;
+
+    void resetCount();
 
 
 public slots:
@@ -37,6 +45,7 @@ public slots:
 signals:
     void daqHatSigChange(double data);
     void dhsc(QList<double> data);
+    void timerCb(int count);
 
 
 };

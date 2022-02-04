@@ -3,13 +3,16 @@
 #include <stdio.h>
 #include <iostream>
 #include "mainwindow.h"
+#include <QVariant>
 #include <QTimer>
+#include <QThread>
 
-QTimer* timer = new QTimer;
+
+
 
 DaqHat118::DaqHat118()
 {
-
+    startTime = QTime::currentTime();
 }
 DaqHat118::~DaqHat118()
 {
@@ -22,6 +25,8 @@ void DaqHat118::getData()
     double v0, v1, v2, v3, v4, v5, v6, v7;
     mcc118_open(address);
 
+
+    // you can think of this as the event loop
     while(1)
     {
         // get the data from the daqhat sheild
@@ -39,10 +44,24 @@ void DaqHat118::getData()
 
         // emit the signal when the data is updated
         emit dhsc(voltArr);
-
-
-
+        timerData();
     }
 }
 
+void DaqHat118::timerData()
+{
+    currentTime = QTime::currentTime();
+    int timediff = currentTime.msecsSinceStartOfDay() - startTime.msecsSinceStartOfDay();
 
+    if(timediff > 10)
+    {
+        count++;
+        startTime = currentTime;
+        emit timerCb(count);
+    }
+}
+
+void DaqHat118::resetCount()
+{
+    count = 0;
+}

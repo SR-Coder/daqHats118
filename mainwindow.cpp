@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <QThread>
 #include <QVariant>
+#include <QTimer>
 #include "daqhat118.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -13,14 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QThread* thread = new QThread();
-    DaqHat118* task = new DaqHat118();
 
     task->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), task, SLOT(getData()));
-//    connect(task, SIGNAL(daqHatSigChange(double)), this, SLOT(displayData(double)));
     connect(task, SIGNAL(dhsc(QList<double>)), this, SLOT(displayData2(QList<double>)));
-
+    connect(task, SIGNAL(timerCb(int)), this, SLOT(displayCounter(int)));
     thread->start();
 
 }
@@ -49,4 +48,13 @@ void MainWindow::displayData2(QList<double> data)
     ui->voltage8->display(data[7]);
 }
 
+void MainWindow::displayCounter(int counter)
+{
+    ui->LCD_counter->display(counter);
+}
 
+
+void MainWindow::on_btn_reset_clicked()
+{
+    task->resetCount();
+}

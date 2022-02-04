@@ -23,6 +23,7 @@ public:
 
     void myFunc();
     int count = 0;
+    DaqHat118* task = new DaqHat118();
 
 
 
@@ -30,7 +31,11 @@ public:
 public slots:
     void displayData(double raw_data);
     void displayData2(QList<double> data);
+    void displayCounter(int counter);
 
+
+private slots:
+    void on_btn_reset_clicked();
 
 private:
     Ui::MainWindow *ui;
